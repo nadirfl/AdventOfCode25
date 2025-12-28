@@ -21,21 +21,35 @@ public class Day1 {
         for (String line : puzzleInput.lines().toList()) {
             lineCounter++;
             int startPosition = position;
+            boolean hasCounterZero = false;
             char rotationDirection = line.charAt(0);
             int rotationValue = Integer.parseInt(line.substring(1));
+
             if (rotationValue > 100 ) {
-                rotationValue = rotationValue % 100;
+                int rotationRest = rotationValue % 100;
+                zeroCounter += ((rotationValue - rotationRest) / 100)-1;
+                hasCounterZero = true;
+                rotationValue = rotationRest;
             }
             position += (rotationDirection == 'R') ? rotationValue : -rotationValue;
-            position += (position <= 0) ? 100 : 0;
-            position -= (position >= 100) ? 100 : 0;
-
-            zeroCounter += (position == 0) ? 1 : 0;
+            if (position < 0) {
+                position += 100;
+                zeroCounter++;
+                hasCounterZero = true;
+            } else if (position >= 100) {
+                position -= 100;
+                zeroCounter++;
+                hasCounterZero = true;
+            }
+            if (position == 0 && !hasCounterZero) {
+                zeroCounter++;
+            }
 
             System.out.println("[ " + lineCounter + "] " +
                     "Startposition: " + startPosition +
                     ", Rotation: " + line +
-                    ", Neue Position: " + position);
+                    ", Neue Position: " + position +
+                    ", ZeroCounter: " + zeroCounter);
         }
         System.out.println("Anzahl Nullen: " + zeroCounter);
     }
